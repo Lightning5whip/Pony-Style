@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pony二次元模型风格一览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #ff6b9d, #c44cff, #6e8efb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 40px rgba(196, 76, 255, 0.3);
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #c44cff, transparent);
+            border-radius: 2px;
+        }
+
+        .gallery {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(196, 76, 255, 0.3),
+                        0 0 60px rgba(110, 142, 251, 0.2);
+            border-color: rgba(196, 76, 255, 0.5);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 107, 157, 0.1), 
+                rgba(196, 76, 255, 0.1), 
+                rgba(110, 142, 251, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-label {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .style-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .style-name::before {
+            content: '✦ ';
+            color: #c44cff;
+        }
+
+        .style-name::after {
+            content: ' ✦';
+            color: #6e8efb;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 85vmin;
+            max-height: 85vmin;
+            animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 80px rgba(196, 76, 255, 0.5),
+                        0 0 120px rgba(110, 142, 251, 0.3);
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .modal-link {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff6b9d, #c44cff);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 20px rgba(196, 76, 255, 0.5);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .modal-link:hover {
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 0 6px 30px rgba(196, 76, 255, 0.7);
+        }
+
+        .modal-link svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .modal-style-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+        }
+
+        .close-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .gallery {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .gallery {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Decorative elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(196, 76, 255, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(110, 142, 251, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(255, 107, 157, 0.05) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pony二次元模型风格一览</h1>
+    </header>
+
+    <main class="gallery">
+        <div class="card" data-style="幻想风" data-url="https://civitai.com/models/404154/wai-ani-ponyxl">
+            <div class="card-image">
+                <img src="images/1.png" alt="幻想风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">幻想风</span>
+            </div>
+        </div>
+
+        <div class="card" data-style="经典风" data-url="https://civitai.com/models/439889/prefect-pony-xl">
+            <div class="card-image">
+                <img src="images/2.png" alt="经典风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">经典风</span>
+            </div>
+        </div>
+
+        <div class="card" data-style="硬核风" data-url="https://civitai.com/models/136054/hardcore-hentai">
+            <div class="card-image">
+                <img src="images/3.png" alt="硬核风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">硬核风</span>
+            </div>
+        </div>
+
+        <div class="card" data-style="娃娃风" data-url="https://civitai.com/models/715287?modelVersionId=892640">
+            <div class="card-image">
+                <img src="images/4.png" alt="娃娃风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">娃娃风</span>
+            </div>
+        </div>
+
+        <div class="card" data-style="日本风" data-url="https://civitai.com/models/448716/boleromixpony?modelVersionId=2259232">
+            <div class="card-image">
+                <img src="images/5.png" alt="日本风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">日本风</span>
+            </div>
+        </div>
+
+        <div class="card" data-style="手办风" data-url="https://civitai.com/models/400329?modelVersionId=1319787">
+            <div class="card-image">
+                <img src="images/6.png" alt="手办风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">手办风</span>
+            </div>
+        </div>
+
+        <div class="card" data-style="可爱风" data-url="https://civitai.com/models/451486/wai-cute?modelVersionId=915200">
+            <div class="card-image">
+                <img src="images/7.png" alt="可爱风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">可爱风</span>
+            </div>
+        </div>
+
+        <div class="card" data-style="少女风" data-url="https://civitai.com/models/316882/momoiropony?modelVersionId=731767">
+            <div class="card-image">
+                <img src="images/8.png" alt="少女风">
+            </div>
+            <div class="card-label">
+                <span class="style-name">少女风</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-backdrop" id="modalBackdrop"></div>
+        <div class="modal-content">
+            <a href="#" class="modal-link" id="modalLink" target="_blank" title="访问模型页面">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7zm-2 16H5V7h7V5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7h-2v7a0 0 0 0 1 0 0H7z"/>
+                </svg>
+            </a>
+            <img src="" alt="" id="modalImage">
+            <div class="modal-style-name" id="modalStyleName"></div>
+        </div>
+        <div class="close-hint">点击任意处关闭</div>
+    </div>
+
+    <script>
+        const cards = document.querySelectorAll('.card');
+        const modal = document.getElementById('modal');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const modalImage = document.getElementById('modalImage');
+        const modalLink = document.getElementById('modalLink');
+        const modalStyleName = document.getElementById('modalStyleName');
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const img = card.querySelector('img');
+                const style = card.dataset.style;
+                const url = card.dataset.url;
+
+                modalImage.src = img.src;
+                modalImage.alt = style;
+                modalLink.href = url;
+                modalStyleName.textContent = style;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close modal
+        modalBackdrop.addEventListener('click', closeModal);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Prevent closing when clicking on modal content
+        document.querySelector('.modal-content').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>
